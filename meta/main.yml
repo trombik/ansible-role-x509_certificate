@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Tomoyuki Sakurai
-  description: Configures something
+  description: Manages X509 public and secret keys
   company: Reallyenglish
   license: BSD
   min_ansible_version: 2.0
@@ -20,6 +20,7 @@ galaxy_info:
 #    - 7
 
   galaxy_tags:
-    - system
+    - certificate
+    - openssl
 #dependencies:
 #  - { role: username.common, some_parameter: 3 }

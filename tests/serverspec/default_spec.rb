@@ -1,58 +1,112 @@
 require "spec_helper"
 require "serverspec"
 
-package = "x509-certs"
-service = "x509-certs"
-config  = "/etc/x509-certs/x509-certs.conf"
-user    = "x509-certs"
-group   = "x509-certs"
-ports   = [PORTS]
-log_dir = "/var/log/x509-certs"
-db_dir  = "/var/lib/x509-certs"
+package = "openssl"
+user = ""
+group = ""
+default_user = "root"
+default_group = "root"
+additional_packages = ["postfix"]
+additional_users = ["postfix"]
+additional_groups = ["mail"]
 
 case os[:family]
 when "freebsd"
-  config = "/usr/local/etc/x509-certs.conf"
-  db_dir = "/var/db/x509-certs"
+  user = "www"
+  group = "www"
+  default_group = "wheel"
 end
 
-describe package(package) do
-  it { should be_installed }
+if os[:family] !~ /bsd$/
+  describe package(package) do
+    it { should be_installed }
+  end
 end
 
-describe file(config) do
+additional_packages.each do |p|
+  package(p) do
+    it { should be_installed }
+  end
+end
+
+additional_users.each do |u|
+  user(u) do
+    it { should exist }
+  end
+end
+
+additional_groups.each do |g|
+  group(g) do
+    it { should exist }
+  end
+end
+
+describe file("/usr/local/etc/ssl/foo.pem") do
+  it { should exist }
   it { should be_file }
-  its(:content) { should match Regexp.escape("x509-certs") }
+  it { should be_mode 444 }
+  it { should be_owned_by default_user }
+  it { should be_grouped_into default_group }
 end
 
-describe file(log_dir) do
+describe command("openssl x509 -noout -in /usr/local/etc/ssl/foo.pem") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should eq "" }
+end
+
+describe file("/usr/local/etc/ssl/bar/bar.pub") do
   it { should exist }
-  it { should be_mode 755 }
+  it { should be_file }
+  it { should be_mode 644 }
   it { should be_owned_by user }
   it { should be_grouped_into group }
 end
 
-describe file(db_dir) do
+describe command("openssl x509 -noout -in /usr/local/etc/ssl/bar/bar.pub") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should eq "" }
+end
+
+describe file("/usr/local/etc/ssl/bar/bar.key") do
   it { should exist }
-  it { should be_mode 755 }
+  it { should be_file }
+  it { should be_mode 400 }
   it { should be_owned_by user }
   it { should be_grouped_into group }
 end
 
-case os[:family]
-when "freebsd"
-  describe file("/etc/rc.conf.d/x509-certs") do
-    it { should be_file }
-  end
+describe command("sudo openssl rsa -check -noout -in /usr/local/etc/ssl/bar/bar.key") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should match(/^RSA key ok$/) }
 end
 
-describe service(service) do
-  it { should be_running }
-  it { should be_enabled }
+describe file("/usr/local/etc/postfix/certs/postfix.pem") do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 444 }
+  it { should be_owned_by "postfix" }
+  it { should be_grouped_into "mail" }
 end
 
-ports.each do |p|
-  describe port(p) do
-    it { should be_listening }
-  end
+describe command("openssl x509 -noout -in /usr/local/etc/postfix/certs/postfix.pem") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should eq "" }
+end
+
+describe file("/usr/local/etc/postfix/certs/postfix.key") do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 440 }
+  it { should be_owned_by "postfix" }
+  it { should be_grouped_into "mail" }
+end
+
+describe command("sudo openssl rsa -check -noout -in /usr/local/etc/postfix/certs/postfix.key") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should match(/^RSA key ok$/) }
 end

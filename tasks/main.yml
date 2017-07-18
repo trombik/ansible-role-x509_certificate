@@ -5,33 +5,79 @@
 
 - include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create log directory
-  file:
-    path: "{{ x509-certs_log_dir }}"
-    mode: 0755
-    owner: "{{ x509-certs_user }}"
-    group: "{{ x509-certs_group }}"
-    state: directory
-  notify: Restart x509-certs
+- set_fact:
+    x509_certs_present: "{{ x509_certs | selectattr('state', 'match', '^present$') | list }}"
 
-- name: Create db directory
-  file:
-    path: "{{ x509-certs_db_dir }}"
-    mode: 0755
-    owner: "{{ x509-certs_user }}"
-    group: "{{ x509-certs_group }}"
-    state: directory
-  notify: Restart x509-certs
+- set_fact:
+    x509_certs_absent: "{{ x509_certs | selectattr('state', 'match', '^absent$') | list }}"
 
-- name: Create x509-certs.conf
+- name: Create x509_certs_dir
+  file:
+    path: "{{ x509_certs_dir }}"
+    mode: 0755
+    owner: "{{ x509_certs_default_owner }}"
+    group: "{{ x509_certs_default_group }}"
+    state: directory
+
+- name: Create directories for pub keys
+  file:
+    path: "{{ item.public.path | dirname }}"
+    mode: 0755
+    state: directory
+  with_items: "{{ x509_certs_present }}"
+  when:
+    - "'path' in item.public"
+    - item.public.path | length > 0
+
+- name: Create directories for secret keys
+  file:
+    path: "{{ item.secret.path | dirname }}"
+    mode: 0755
+    state: directory
+  with_items: "{{ x509_certs_present }}"
+  when:
+    - "'secret' in item"
+    - "'path' in item.secret"
+    - item.secret.path | length > 0
+
+- name: Create public keys
   template:
-    src: x509-certs.conf.j2
-    dest: "{{ x509-certs_conf_file }}"
-    validate: echo %s
-  notify: Restart x509-certs
+    src: pem.j2
+    dest: "{{ item.public.path | default(x509_certs_dir + '/' + item.name + '.pem') }}"
+    owner: "{{ item.public.owner | default(x509_certs_default_owner) }}"
+    group: "{{ item.public.group | default(x509_certs_default_group) }}"
+    mode: "{{ item.public.mode | default(0444) }}"
+    validate: "{{ x509_certs_validate_command_public[x509_certs_validate_command] }}"
+  with_items: "{{ x509_certs_present }}"
+  when:
+    - "'public' in item"
 
-- name: Start x509-certs
-  service:
-    name: "{{ x509-certs_service }}"
-    enabled: true
-    state: started
+- name: Create secret keys
+  template:
+    src: key.j2
+    dest: "{{ item.secret.path | default(x509_certs_dir + '/' + item.name + '.key') }}"
+    owner: "{{ item.secret.owner | default(x509_certs_default_owner) }}"
+    group: "{{ item.secret.group | default(x509_certs_default_group) }}"
+    mode: "{{ item.secret.mode | default(0400) }}"
+    validate: "{{ x509_certs_validate_command_secret[x509_certs_validate_command] }}"
+  with_items: "{{ x509_certs_present }}"
+  no_log: yes
+  when:
+    - "'secret' in item"
+
+- name: Remove public keys
+  file:
+    path: "{{ item.public.path | default(x509_certs_present + '/' + item.name + '.pub') }}"
+    state: absent
+  with_items: "{{ x509_certs_absent }}"
+  when:
+    - "'public' in item"
+
+- name: Remove secret keys
+  file:
+    path: "{{ item.secret.path | default(x509_certs_present + '/' + item.name + '.pub') }}"
+    state: absent
+  with_items: "{{ x509_certs_absent }}"
+  no_log: yes
+  when:
+    - "'secret' in item"

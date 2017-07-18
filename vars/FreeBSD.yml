@@ -1,2 +1,4 @@
-__x509-certs_db_dir: /var/db/x509-certs
-__x509-certs_conf_dir: /usr/local/etc/x509-certs
+__x509_certs_dir: /usr/local/etc/ssl
+__x509_certs_packages: []
+__x509_certs_default_owner: root
+__x509_certs_default_group: wheel
