@@ -1,4 +1,4 @@
-__x509_certs_dir: /usr/local/etc/ssl
-__x509_certs_packages: []
-__x509_certs_default_owner: root
-__x509_certs_default_group: wheel
+__x509_certificate_dir: /usr/local/etc/ssl
+__x509_certificate_packages: []
+__x509_certificate_default_owner: root
+__x509_certificate_default_group: wheel

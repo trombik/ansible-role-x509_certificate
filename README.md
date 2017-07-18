@@ -1,4 +1,4 @@
-# ansible-role-x509-certs
+# ansible-role-x509-certificate
 
 Manages X509 secret and/or public keys. The role assumes you already have valid
 secret key or *signed* public key. The role does not create or manage CSR.
@@ -11,27 +11,27 @@ None
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `x509_certs_dir` | path to default directory to keep certificates and keys | `{{ __x509_certs_dir }}` |
-| `x509_certs_packages` | list of packages to install to manage keys, i.e. validating certificates | `{{ __x509_certs_packages }}` |
-| `x509_certs_default_owner` | default owner of keys | `{{ __x509_certs_default_owner }}` |
-| `x509_certs_default_group` | default group of keys | `{{ __x509_certs_default_group }}` |
-| `x509_certs_additional_packages` | list of additional packages to install. they are installed before managing certificates and keys. useful when the owner of the files does not exist, but to be created by other role or task later. using this variable needs care. when a package is installed by this role, package installation task after this role will not be triggered, which might cause unexpected effects. in that case, create the user and the group by yourself | `[]` |
-| `x509_certs_validate_command` | command to validate certificate and keys. the command must be defined in `x509_certs_validate_command_secret` and `x509_certs_validate_command_public` as key | `openssl` |
-| `x509_certs_validate_command_secret` | dict of command to validate secret key (see below) | `{"openssl"=>"openssl rsa -check -in %s"}` |
-| `x509_certs_validate_command_public` | dict of command to validate public key (see below) | `{"openssl"=>"openssl x509 -noout -in %s"}` |
-| `x509_certs` | keys to manage (see below) | `[]` |
+| `x509_certificate_dir` | path to default directory to keep certificates and keys | `{{ __x509_certificate_dir }}` |
+| `x509_certificate_packages` | list of packages to install to manage keys, i.e. validating certificates | `{{ __x509_certificate_packages }}` |
+| `x509_certificate_default_owner` | default owner of keys | `{{ __x509_certificate_default_owner }}` |
+| `x509_certificate_default_group` | default group of keys | `{{ __x509_certificate_default_group }}` |
+| `x509_certificate_additional_packages` | list of additional packages to install. they are installed before managing certificates and keys. useful when the owner of the files does not exist, but to be created by other role or task later. using this variable needs care. when a package is installed by this role, package installation task after this role will not be triggered, which might cause unexpected effects. in that case, create the user and the group by yourself | `[]` |
+| `x509_certificate_validate_command` | command to validate certificate and keys. the command must be defined in `x509_certificate_validate_command_secret` and `x509_certificate_validate_command_public` as key | `openssl` |
+| `x509_certificate_validate_command_secret` | dict of command to validate secret key (see below) | `{"openssl"=>"openssl rsa -check -in %s"}` |
+| `x509_certificate_validate_command_public` | dict of command to validate public key (see below) | `{"openssl"=>"openssl x509 -noout -in %s"}` |
+| `x509_certificate` | keys to manage (see below) | `[]` |
 
-## `x509_certs_validate_command_secret`
+## `x509_certificate_validate_command_secret`
 
 This variable is a dict. The key is command name and the value is used to
 validate secret key files when creating.
 
-## `x509_certs_validate_command_public`
+## `x509_certificate_validate_command_public`
 
 This variable is a dict. The key is command name and the value is used to
 validate public certificate files when creating.
 
-## `x509_certs`
+## `x509_certificate`
 
 This variable is a list of dict. Keys and Values are explained below.
 
@@ -42,15 +42,15 @@ This variable is a list of dict. Keys and Values are explained below.
 | `public` | a dict that represents a public certificate | no |
 | `secret` | a dict that represents a secret key | no |
 
-### `public` and `secret` in `x509_certs`
+### `public` and `secret` in `x509_certificate`
 
 `public` and `secret` must contain a dict. The dict is explained below.
 
 | Key | Value | Mandatory? |
 |-----|-------|------------|
-| `path` | path to the file. if not defined, the file will be created under `x509_certs_dir`, with `$name.pem` | no |
-| `owner` | owner of the file (default is `x509_certs_default_owner`) | no |
-| `group` | group of the file (default is `x509_certs_default_group`) | no |
+| `path` | path to the file. if not defined, the file will be created under `x509_certificate_dir`, with `$name.pem` | no |
+| `owner` | owner of the file (default is `x509_certificate_default_owner`) | no |
+| `group` | group of the file (default is `x509_certificate_default_group`) | no |
 | `mode` | permission of the file (default is `0444` when the file is a public certificate, `0400` when the file is a secet key) | no |
 | `key` | the content of the key | no |
 
@@ -58,10 +58,10 @@ This variable is a list of dict. Keys and Values are explained below.
 
 | Variable | Default |
 |----------|---------|
-| `__x509_certs_dir` | `/usr/local/etc/ssl` |
-| `__x509_certs_packages` | `[]` |
-| `__x509_certs_default_owner` | `root` |
-| `__x509_certs_default_group` | `wheel` |
+| `__x509_certificate_dir` | `/usr/local/etc/ssl` |
+| `__x509_certificate_packages` | `[]` |
+| `__x509_certificate_default_owner` | `root` |
+| `__x509_certificate_default_group` | `wheel` |
 
 # Dependencies
 
@@ -72,11 +72,11 @@ None
 ```yaml
 - hosts: localhost
   roles:
-    - ansible-role-x509-certs
+    - ansible-role-x509-certificate
   vars:
-    x509_certs_additional_packages:
+    x509_certificate_additional_packages:
       - postfix
-    x509_certs:
+    x509_certificate:
       - name: foo
         state: present
         public:

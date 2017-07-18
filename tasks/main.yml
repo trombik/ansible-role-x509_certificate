@@ -1,22 +1,22 @@
 ---
-# tasks file for ansible-role-x509-certs
+# tasks file for ansible-role-x509-certificate
 
 - include_vars: "{{ ansible_os_family }}.yml"
 
 - include: "install-{{ ansible_os_family }}.yml"
 
 - set_fact:
-    x509_certs_present: "{{ x509_certs | selectattr('state', 'match', '^present$') | list }}"
+    x509_certificate_present: "{{ x509_certificate | selectattr('state', 'match', '^present$') | list }}"
 
 - set_fact:
-    x509_certs_absent: "{{ x509_certs | selectattr('state', 'match', '^absent$') | list }}"
+    x509_certificate_absent: "{{ x509_certificate | selectattr('state', 'match', '^absent$') | list }}"
 
-- name: Create x509_certs_dir
+- name: Create x509_certificate_dir
   file:
-    path: "{{ x509_certs_dir }}"
+    path: "{{ x509_certificate_dir }}"
     mode: 0755
-    owner: "{{ x509_certs_default_owner }}"
-    group: "{{ x509_certs_default_group }}"
+    owner: "{{ x509_certificate_default_owner }}"
+    group: "{{ x509_certificate_default_group }}"
     state: directory
 
 - name: Create directories for pub keys
@@ -24,7 +24,7 @@
     path: "{{ item.public.path | dirname }}"
     mode: 0755
     state: directory
-  with_items: "{{ x509_certs_present }}"
+  with_items: "{{ x509_certificate_present }}"
   when:
     - "'path' in item.public"
     - item.public.path | length > 0
@@ -34,7 +34,7 @@
     path: "{{ item.secret.path | dirname }}"
     mode: 0755
     state: directory
-  with_items: "{{ x509_certs_present }}"
+  with_items: "{{ x509_certificate_present }}"
   when:
     - "'secret' in item"
     - "'path' in item.secret"
@@ -43,41 +43,41 @@
 - name: Create public keys
   template:
     src: pem.j2
-    dest: "{{ item.public.path | default(x509_certs_dir + '/' + item.name + '.pem') }}"
-    owner: "{{ item.public.owner | default(x509_certs_default_owner) }}"
-    group: "{{ item.public.group | default(x509_certs_default_group) }}"
+    dest: "{{ item.public.path | default(x509_certificate_dir + '/' + item.name + '.pem') }}"
+    owner: "{{ item.public.owner | default(x509_certificate_default_owner) }}"
+    group: "{{ item.public.group | default(x509_certificate_default_group) }}"
     mode: "{{ item.public.mode | default(0444) }}"
-    validate: "{{ x509_certs_validate_command_public[x509_certs_validate_command] }}"
-  with_items: "{{ x509_certs_present }}"
+    validate: "{{ x509_certificate_validate_command_public[x509_certificate_validate_command] }}"
+  with_items: "{{ x509_certificate_present }}"
   when:
     - "'public' in item"
 
 - name: Create secret keys
   template:
     src: key.j2
-    dest: "{{ item.secret.path | default(x509_certs_dir + '/' + item.name + '.key') }}"
-    owner: "{{ item.secret.owner | default(x509_certs_default_owner) }}"
-    group: "{{ item.secret.group | default(x509_certs_default_group) }}"
+    dest: "{{ item.secret.path | default(x509_certificate_dir + '/' + item.name + '.key') }}"
+    owner: "{{ item.secret.owner | default(x509_certificate_default_owner) }}"
+    group: "{{ item.secret.group | default(x509_certificate_default_group) }}"
     mode: "{{ item.secret.mode | default(0400) }}"
-    validate: "{{ x509_certs_validate_command_secret[x509_certs_validate_command] }}"
-  with_items: "{{ x509_certs_present }}"
+    validate: "{{ x509_certificate_validate_command_secret[x509_certificate_validate_command] }}"
+  with_items: "{{ x509_certificate_present }}"
   no_log: yes
   when:
     - "'secret' in item"
 
 - name: Remove public keys
   file:
-    path: "{{ item.public.path | default(x509_certs_present + '/' + item.name + '.pub') }}"
+    path: "{{ item.public.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
     state: absent
-  with_items: "{{ x509_certs_absent }}"
+  with_items: "{{ x509_certificate_absent }}"
   when:
     - "'public' in item"
 
 - name: Remove secret keys
   file:
-    path: "{{ item.secret.path | default(x509_certs_present + '/' + item.name + '.pub') }}"
+    path: "{{ item.secret.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
     state: absent
-  with_items: "{{ x509_certs_absent }}"
+  with_items: "{{ x509_certificate_absent }}"
   no_log: yes
   when:
     - "'secret' in item"

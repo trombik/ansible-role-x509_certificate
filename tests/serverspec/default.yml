@@ -1,10 +1,10 @@
 - hosts: localhost
   roles:
-    - ansible-role-x509-certs
+    - ansible-role-x509-certificate
   vars:
-    x509_certs_additional_packages:
+    x509_certificate_additional_packages:
       - postfix
-    x509_certs:
+    x509_certificate:
       - name: foo
         state: present
         public:

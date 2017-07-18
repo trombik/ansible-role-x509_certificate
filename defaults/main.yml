@@ -1,11 +1,11 @@
-x509_certs_dir:  "{{ __x509_certs_dir }}"
-x509_certs_packages: "{{ __x509_certs_packages }}"
-x509_certs_default_owner: "{{ __x509_certs_default_owner }}"
-x509_certs_default_group: "{{ __x509_certs_default_group }}"
-x509_certs_additional_packages: []
-x509_certs_validate_command: openssl
-x509_certs_validate_command_secret:
+x509_certificate_dir:  "{{ __x509_certificate_dir }}"
+x509_certificate_packages: "{{ __x509_certificate_packages }}"
+x509_certificate_default_owner: "{{ __x509_certificate_default_owner }}"
+x509_certificate_default_group: "{{ __x509_certificate_default_group }}"
+x509_certificate_additional_packages: []
+x509_certificate_validate_command: openssl
+x509_certificate_validate_command_secret:
   openssl: openssl rsa -check -in %s
-x509_certs_validate_command_public:
+x509_certificate_validate_command_public:
   openssl: openssl x509 -noout -in %s
-x509_certs: []
+x509_certificate: []

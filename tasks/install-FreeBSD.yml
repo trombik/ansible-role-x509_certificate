@@ -1,13 +1,13 @@
 ---
 
-- name: Install x509_certs_packages
+- name: Install x509_certificate_packages
   pkgng:
     name: "{{ item }}"
     state: present
-  with_items: "{{ x509_certs_packages }}"
+  with_items: "{{ x509_certificate_packages }}"
 
-- name: Install x509_certs_additional_packages
+- name: Install x509_certificate_additional_packages
   pkgng:
     name: "{{ item }}"
     state: present
-  with_items: "{{ x509_certs_additional_packages }}"
+  with_items: "{{ x509_certificate_additional_packages }}"
