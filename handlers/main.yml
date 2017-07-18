@@ -1,0 +1,6 @@
+---
+
+- name: Restart x509-certs
+  service:
+    name: x509-certs
+    state: restarted

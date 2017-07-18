@@ -1,0 +1,6 @@
+---
+
+- name: Install x509-certs
+  pkgng:
+    name: x509-certs
+    state: present

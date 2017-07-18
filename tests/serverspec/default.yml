@@ -1,0 +1,5 @@
+- hosts: localhost
+  roles:
+    - ansible-role-x509-certs
+  vars:
+    x509-certs_config: ""

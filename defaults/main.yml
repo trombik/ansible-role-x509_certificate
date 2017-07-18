@@ -1,0 +1,8 @@
+x509-certs_user: x509-certs
+x509-certs_group: x509-certs
+x509-certs_log_dir: /var/log/x509-certs
+x509-certs_db_dir: "{{ __x509-certs_db_dir }}"
+x509-certs_service: x509-certs
+x509-certs_conf_dir: "{{ __x509-certs_conf_dir }}"
+x509-certs_conf_file: "{{ __x509-certs_conf_dir }}/x509-certs.conf"
+x509-certs_flags: ""

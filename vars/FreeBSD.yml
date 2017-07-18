@@ -1,0 +1,2 @@
+__x509-certs_db_dir: /var/db/x509-certs
+__x509-certs_conf_dir: /usr/local/etc/x509-certs
