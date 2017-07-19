@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - ansible-role-x509-certs
+    - ansible-role-x509-certificate

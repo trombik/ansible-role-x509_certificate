@@ -9,4 +9,4 @@
 
   pre_tasks:
   roles:
-    - x509-certs
+    - x509-certificate
