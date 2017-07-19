@@ -7,9 +7,11 @@
 
 - set_fact:
     x509_certificate_present: "{{ x509_certificate | selectattr('state', 'match', '^present$') | list }}"
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
 - set_fact:
     x509_certificate_absent: "{{ x509_certificate | selectattr('state', 'match', '^absent$') | list }}"
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
 - name: Create x509_certificate_dir
   file:
@@ -18,12 +20,14 @@
     owner: "{{ x509_certificate_default_owner }}"
     group: "{{ x509_certificate_default_group }}"
     state: directory
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
 - name: Create directories for pub keys
   file:
     path: "{{ item.public.path | dirname }}"
     mode: 0755
     state: directory
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_present }}"
   when:
     - "'path' in item.public"
@@ -34,6 +38,7 @@
     path: "{{ item.secret.path | dirname }}"
     mode: 0755
     state: directory
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_present }}"
   when:
     - "'secret' in item"
@@ -48,6 +53,7 @@
     group: "{{ item.public.group | default(x509_certificate_default_group) }}"
     mode: "{{ item.public.mode | default(0444) }}"
     validate: "{{ x509_certificate_validate_command_public[x509_certificate_validate_command] }}"
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_present }}"
   when:
     - "'public' in item"
@@ -60,8 +66,8 @@
     group: "{{ item.secret.group | default(x509_certificate_default_group) }}"
     mode: "{{ item.secret.mode | default(0400) }}"
     validate: "{{ x509_certificate_validate_command_secret[x509_certificate_validate_command] }}"
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_present }}"
-  no_log: yes
   when:
     - "'secret' in item"
 
@@ -69,6 +75,7 @@
   file:
     path: "{{ item.public.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
     state: absent
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_absent }}"
   when:
     - "'public' in item"
@@ -77,7 +84,7 @@
   file:
     path: "{{ item.secret.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
     state: absent
+  no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_absent }}"
-  no_log: yes
   when:
     - "'secret' in item"

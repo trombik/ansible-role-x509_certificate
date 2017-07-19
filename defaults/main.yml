@@ -9,3 +9,4 @@ x509_certificate_validate_command_secret:
 x509_certificate_validate_command_public:
   openssl: openssl x509 -noout -in %s
 x509_certificate: []
+x509_certificate_debug_log: no
