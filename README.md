@@ -55,6 +55,15 @@ This variable is a list of dict. Keys and Values are explained below.
 | `mode` | permission of the file (default is `0444` when the file is a public certificate, `0400` when the file is a secet key) | no |
 | `key` | the content of the key | no |
 
+## Debian
+
+| Variable | Default |
+|----------|---------|
+| `__x509_certificate_dir` | `/etc/ssl` |
+| `__x509_certificate_packages` | `["openssl"]` |
+| `__x509_certificate_default_owner` | `root` |
+| `__x509_certificate_default_group` | `root` |
+
 ## FreeBSD
 
 | Variable | Default |
@@ -63,6 +72,24 @@ This variable is a list of dict. Keys and Values are explained below.
 | `__x509_certificate_packages` | `[]` |
 | `__x509_certificate_default_owner` | `root` |
 | `__x509_certificate_default_group` | `wheel` |
+
+## OpenBSD
+
+| Variable | Default |
+|----------|---------|
+| `__x509_certificate_dir` | `/etc/ssl` |
+| `__x509_certificate_packages` | `[]` |
+| `__x509_certificate_default_owner` | `root` |
+| `__x509_certificate_default_group` | `wheel` |
+
+## RedHat
+
+| Variable | Default |
+|----------|---------|
+| `__x509_certificate_dir` | `/etc/ssl` |
+| `__x509_certificate_packages` | `["openssl"]` |
+| `__x509_certificate_default_owner` | `root` |
+| `__x509_certificate_default_group` | `root` |
 
 # Dependencies
 
