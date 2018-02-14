@@ -3,7 +3,7 @@
 
 - include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
+- include_tasks: "install-{{ ansible_os_family }}.yml"
 
 - set_fact:
     x509_certificate_present: "{{ x509_certificate | selectattr('state', 'match', '^present$') | list }}"
