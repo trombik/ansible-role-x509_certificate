@@ -1,3 +1,7 @@
+## Release 1.1.2
+
+* 38b5b56 [bugfix] s/include/include_tasks/, requiring ansible 2.4 (#3)
+
 ## Release 1.1.1
 
 * 1f0f5d9 [bugfix] bump rubocop to the latest
