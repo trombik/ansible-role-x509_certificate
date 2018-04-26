@@ -1,3 +1,7 @@
+## Release 1.2.0
+
+* e0b2bbf [feature] Support OpenBSD 6.3, drop EoLed releases (#5)
+
 ## Release 1.1.2
 
 * 38b5b56 [bugfix] s/include/include_tasks/, requiring ansible 2.4 (#3)
