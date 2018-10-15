@@ -1,4 +1,4 @@
-# ansible-role-x509-certificate
+# ansible-role-x509_certificate
 
 Manages X509 secret and/or public keys. The role assumes you already have valid
 secret key or *signed* public key. The role does not create or manage CSR.
@@ -100,7 +100,7 @@ None
 ```yaml
 - hosts: localhost
   roles:
-    - ansible-role-x509-certificate
+    - ansible-role-x509_certificate
   vars:
     # XXX NEVER set this variable to `yes` unless you know what you are doing.
     x509_certificate_debug_log: yes

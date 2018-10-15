@@ -1,6 +1,6 @@
 node ('virtualbox') {
 
-  def directory = "ansible-role-x509-certificate"
+  def directory = "ansible-role-x509_certificate"
   env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
   stage 'Clean up'
   deleteDir()

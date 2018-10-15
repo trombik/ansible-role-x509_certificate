@@ -1,6 +1,6 @@
 - hosts: localhost
   roles:
-    - ansible-role-x509-certificate
+    - ansible-role-x509_certificate
   vars:
     # XXX NEVER set this variable to `yes` unless you know what you are doing.
     x509_certificate_debug_log: yes
