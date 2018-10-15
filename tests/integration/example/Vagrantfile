@@ -2,23 +2,23 @@ require "socket"
 # @return [String] public IP address of workstation used for egress traffic
 def local_ip
   @local_ip ||= begin
-    # turn off reverse DNS resolution temporarily
-    orig = Socket.do_not_reverse_lookup
-    Socket.do_not_reverse_lookup = true
+                  # turn off reverse DNS resolution temporarily
+                  orig = Socket.do_not_reverse_lookup
+                  Socket.do_not_reverse_lookup = true
 
-    # open UDP socket so that it never send anything over the network
-    UDPSocket.open do |s|
-      s.connect "8.8.8.8", 1 # any global IP address works here
-      s.addr.last
-    end
-  ensure
-    Socket.do_not_reverse_lookup = orig
-  end
+                  # open UDP socket so that it never send anything over the network
+                  UDPSocket.open do |s|
+                    s.connect "8.8.8.8", 1 # any global IP address works here
+                    s.addr.last
+                  end
+                ensure
+                  Socket.do_not_reverse_lookup = orig
+                end
 end
 
 # @return [Integer] default listening port
 def local_port
-  ENV["VAGRANT_PROXY_PORT"] ? ENV["VAGRANT_PROXY_PORT"] : 8080
+  ENV["VAGRANT_PROXY_PORT"] || 8080
 end
 
 # @return [String] the proxy URL
@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "client1" do |c|
     c.vm.network "private_network", ip: "192.168.21.100"
-    c.vm.hostname = "client1.virtualbox.reallyenglish.com"
+    c.vm.hostname = "client1.virtualbox.trombik.org"
     c.vm.provision :ansible do |ansible|
       ansible.limit = "192.168.21.100"
       ansible.playbook = "site.yml"
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "server1" do |c|
     c.vm.network "private_network", ip: "192.168.21.200"
-    c.vm.hostname = "server1.virtualbox.reallyenglish.com"
+    c.vm.hostname = "server1.virtualbox.trombik.org"
     c.vm.provision :ansible do |ansible|
       ansible.limit = "192.168.21.200"
       ansible.playbook = "site.yml"

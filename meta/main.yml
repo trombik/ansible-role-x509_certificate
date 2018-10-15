@@ -2,7 +2,7 @@
 galaxy_info:
   author: Tomoyuki Sakurai
   description: Manages X509 public and secret keys
-  company: Reallyenglish
+  company: N/A
   license: BSD
   min_ansible_version: 2.4
   platforms:
@@ -26,4 +26,4 @@ galaxy_info:
     - certificate
     - openssl
     - x509
-dependencies:
+dependencies: []
