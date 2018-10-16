@@ -1,3 +1,15 @@
+## Release 2.0.0
+
+* 529cb76 bugfix backward-incompatible: rename role name
+* e2d6673 bugfix: QA
+
+Due to a breaking change in galaxy, the repository name has been changed. the
+canonical role name is now:
+
+```
+trombik.x509_certificate
+```
+
 ## Release 1.2.0
 
 * e0b2bbf [feature] Support OpenBSD 6.3, drop EoLed releases (#5)
