@@ -1,3 +1,7 @@
+## Release 2.0.1
+
+* 1804b09 bugfix: add role_name again to fix role name in galaxy
+
 ## Release 2.0.0
 
 * 529cb76 bugfix backward-incompatible: rename role name
