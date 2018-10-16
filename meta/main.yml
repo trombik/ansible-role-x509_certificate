@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: x509_certificate
   author: Tomoyuki Sakurai
   description: Manages X509 public and secret keys
   company: N/A
