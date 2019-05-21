@@ -1,3 +1,10 @@
+## Release 2.1.0
+
+* cb2577b bugfix: s/python/python3/ on OpenBSD 6.5
+* b7faebd bugfix: update supported platform versions
+* 5dd032d bugfix: QA
+* 6dfbc06 feature: support FreeBSD 11.2, Ubuntu 18.04
+
 ## Release 2.0.1
 
 * 1804b09 bugfix: add role_name again to fix role name in galaxy
