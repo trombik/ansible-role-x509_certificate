@@ -98,6 +98,7 @@ None
 # Example Playbook
 
 ```yaml
+---
 - hosts: localhost
   roles:
     - ansible-role-x509_certificate
