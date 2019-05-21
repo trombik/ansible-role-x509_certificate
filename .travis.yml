@@ -1,6 +1,6 @@
 ---
 language: python
-python: "2.7"
+python: "3.6"
 
 # Use the new container infrastructure
 sudo: false
@@ -9,9 +9,8 @@ sudo: false
 addons:
   apt:
     packages:
-    - python-pip
-    - curl
-
+      - python-pip
+      - curl
 cache:
   directories:
     - $HOME/.rvm/
@@ -20,7 +19,7 @@ cache:
 
 install:
   # Install ansible
-  - pip install ansible
+  - pip install ansible yamllint
 
   # Check ansible version
   - ansible --version
@@ -46,8 +45,8 @@ script:
   - "if [ ! -f .private_repo ]; then ansible-playbook tests/travisci/tests.yml -i tests/travisci/inventory --syntax-check; fi"
 
   # use recent ruby, instead of default ruby 1.9
-  - rvm install 2.3
-  - rvm use 2.3
+  - rvm install 2.5.1
+  - rvm use 2.5.1
 
   # download the QA scripts
   - git clone https://github.com/trombik/qansible.git
@@ -74,6 +73,9 @@ script:
 
   # run rubocop
   - bundle exec rubocop
+
+  # run yamllint
+  - yamllint -c .yamllint.yml .
 
   # run the QA test
   - qansible qa

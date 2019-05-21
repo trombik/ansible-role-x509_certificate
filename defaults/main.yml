@@ -1,4 +1,5 @@
-x509_certificate_dir:  "{{ __x509_certificate_dir }}"
+---
+x509_certificate_dir: "{{ __x509_certificate_dir }}"
 x509_certificate_packages: "{{ __x509_certificate_packages }}"
 x509_certificate_default_owner: "{{ __x509_certificate_default_owner }}"
 x509_certificate_default_group: "{{ __x509_certificate_default_group }}"
