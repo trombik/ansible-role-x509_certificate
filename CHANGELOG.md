@@ -1,3 +1,9 @@
+## Release 2.1.1
+
+* 960a941 bugfix: QA
+* e297c15 bugfix: update boxes
+* 1b2fc93 bugfix: remove with_items from package modules
+
 ## Release 2.1.0
 
 * cb2577b bugfix: s/python/python3/ on OpenBSD 6.5
