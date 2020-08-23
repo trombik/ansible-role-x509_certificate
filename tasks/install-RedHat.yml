@@ -2,12 +2,10 @@
 
 - name: Install x509_certificate_packages
   yum:
-    name: "{{ item }}"
+    name: "{{ x509_certificate_packages }}"
     state: present
-  with_items: "{{ x509_certificate_packages }}"
 
 - name: Install x509_certificate_additional_packages
   yum:
-    name: "{{ item }}"
+    name: "{{ x509_certificate_additional_packages }}"
     state: present
-  with_items: "{{ x509_certificate_additional_packages }}"
