@@ -75,7 +75,7 @@
 
 - name: Remove public keys
   file:
-    path: "{{ item.public.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
+    path: "{{ item.public.path | default(x509_certificate_dir + '/' + item.name + '.pub') }}"
     state: absent
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_absent }}"
@@ -84,7 +84,7 @@
 
 - name: Remove secret keys
   file:
-    path: "{{ item.secret.path | default(x509_certificate_present + '/' + item.name + '.pub') }}"
+    path: "{{ item.secret.path | default(x509_certificate_dir + '/' + item.name + '.pub') }}"
     state: absent
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
   with_items: "{{ x509_certificate_absent }}"
