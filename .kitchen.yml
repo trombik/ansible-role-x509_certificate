@@ -62,3 +62,12 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
+  - name: remove
+    includes:
+      - freebsd-12.1-amd64
+    provisioner:
+      name: ansible_playbook
+      playbook: tests/serverspec/remove.yml
+    verifier:
+      name: shell
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/remove_spec.rb
