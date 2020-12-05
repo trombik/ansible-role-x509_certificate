@@ -1,7 +1,7 @@
 require "spec_helper"
 require "serverspec"
 
-files = %w{remove_me.pem remove_me.key}
+files = %w[remove_me.pem remove_me.key]
 
 describe file "/tmp/ansible_test.done" do
   it { should exist }
