@@ -1,3 +1,11 @@
+## Release 2.1.2
+
+* 1312ae1 ci: add Github Actions workflows
+* e5ec3ca bugfix: QA
+* 90e4985 bugfix: add a test case for state: absent
+* 616b54c [bugfix] fixed wrong fileending
+* e8a6f3d [bugfix] fixed wrong variable
+
 ## Release 2.1.1
 
 * 960a941 bugfix: QA
