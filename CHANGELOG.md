@@ -1,3 +1,7 @@
+## Release 2.1.3
+
+* ade5c4a bugfix: fix unquoted argument for `default`
+
 ## Release 2.1.2
 
 * 1312ae1 ci: add Github Actions workflows
