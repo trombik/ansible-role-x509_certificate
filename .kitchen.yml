@@ -22,9 +22,9 @@ provisioner:
   ansible_vault_password_file: <%= File.expand_path(ENV['ANSIBLE_VAULT_PASSWORD_FILE'] || '') %>
 
 platforms:
-  - name: freebsd-12.1-amd64
+  - name: freebsd-13.0-amd64
     driver:
-      box: trombik/ansible-freebsd-12.1-amd64
+      box: trombik/ansible-freebsd-13.0-amd64
       box_check_update: false
     driver_config:
       ssh:
