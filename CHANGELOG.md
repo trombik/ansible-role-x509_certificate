@@ -1,3 +1,10 @@
+## Release 2.1.4
+
+* 91270ca bugfix: support Devuan
+* 90461ea bugfix: QA
+* d0c8a5c bugfix: update box versions
+* 22b788f bugfix: add publish action
+
 ## Release 2.1.3
 
 * ade5c4a bugfix: fix unquoted argument for `default`
