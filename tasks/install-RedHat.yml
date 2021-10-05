@@ -1,11 +1,11 @@
 ---
 
 - name: Install x509_certificate_packages
-  yum:
+  ansible.builtin.yum:
     name: "{{ x509_certificate_packages }}"
     state: present
 
 - name: Install x509_certificate_additional_packages
-  yum:
+  ansible.builtin.yum:
     name: "{{ x509_certificate_additional_packages }}"
     state: present

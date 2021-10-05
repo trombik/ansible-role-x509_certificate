@@ -1,11 +1,11 @@
 ---
 
 - name: Install x509_certificate_packages
-  openbsd_pkg:
+  community.general.openbsd_pkg:
     name: "{{ x509_certificate_packages }}"
     state: present
 
 - name: Install x509_certificate_additional_packages
-  openbsd_pkg:
+  community.general.openbsd_pkg:
     name: "{{ x509_certificate_additional_packages }}"
     state: present

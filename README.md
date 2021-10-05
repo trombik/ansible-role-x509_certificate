@@ -5,7 +5,7 @@ secret key or *signed* public key. The role does not create or manage CSR.
 
 # Requirements
 
-None
+The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 
 # Role Variables
 
