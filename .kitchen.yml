@@ -33,9 +33,9 @@ platforms:
       extra_vars:
         ansible_python_interpreter: '/usr/local/bin/python3'
 
-  - name: openbsd-6.7-amd64
+  - name: openbsd-6.9-amd64
     driver:
-      box: trombik/ansible-openbsd-6.7-amd64
+      box: trombik/ansible-openbsd-6.9-amd64
       box_check_update: false
     driver_config:
       ssh:
@@ -48,10 +48,21 @@ platforms:
     driver:
       box: trombik/ansible-ubuntu-18.04-amd64
       box_check_update: false
+    provisioner:
+      extra_vars:
+        ansible_python_interpreter: '/usr/bin/python3'
 
-  - name: centos-7.4-x86_64
+  - name: ubuntu-20.04-amd64
     driver:
-      box: trombik/ansible-centos-7.4-x86_64
+      box: trombik/ansible-ubuntu-20.04-amd64
+      box_check_update: false
+    provisioner:
+      extra_vars:
+        ansible_python_interpreter: '/usr/bin/python3'
+
+  - name: centos-7.8-x86_64
+    driver:
+      box: trombik/ansible-centos-7.8-x86_64
       box_check_update: false
 
 suites:
