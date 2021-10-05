@@ -1,11 +1,11 @@
 ---
 
 - name: Install x509_certificate_packages
-  pkgng:
+  ansible.builtin.pkgng:
     name: "{{ x509_certificate_packages }}"
     state: present
 
 - name: Install x509_certificate_additional_packages
-  pkgng:
+  ansible.builtin.pkgng:
     name: "{{ x509_certificate_additional_packages }}"
     state: present

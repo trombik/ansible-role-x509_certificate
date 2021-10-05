@@ -7,16 +7,18 @@
 - name: "Include tasks install-{{ ansible_os_family }}.yml"
   include_tasks: "install-{{ ansible_os_family }}.yml"
 
-- set_fact:
+- name: Set x509_certificate_present fact
+  ansible.builtin.set_fact:
     x509_certificate_present: "{{ x509_certificate | selectattr('state', 'match', '^present$') | list }}"
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
-- set_fact:
+- name: Set x509_certificate_absent fact
+  ansible.builtin.set_fact:
     x509_certificate_absent: "{{ x509_certificate | selectattr('state', 'match', '^absent$') | list }}"
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
 - name: Create x509_certificate_dir
-  file:
+  ansible.builtin.file:
     path: "{{ x509_certificate_dir }}"
     mode: 0755
     owner: "{{ x509_certificate_default_owner }}"
@@ -25,7 +27,7 @@
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
 
 - name: Create directories for pub keys
-  file:
+  ansible.builtin.file:
     path: "{{ item.public.path | dirname }}"
     mode: 0755
     state: directory
@@ -36,7 +38,7 @@
     - item.public.path | length > 0
 
 - name: Create directories for secret keys
-  file:
+  ansible.builtin.file:
     path: "{{ item.secret.path | dirname }}"
     mode: 0755
     state: directory
@@ -48,7 +50,7 @@
     - item.secret.path | length > 0
 
 - name: Create public keys
-  template:
+  ansible.builtin.template:
     src: pem.j2
     dest: "{{ item.public.path | default(x509_certificate_dir + '/' + item.name + '.pem') }}"
     owner: "{{ item.public.owner | default(x509_certificate_default_owner) }}"
@@ -61,7 +63,7 @@
     - "'public' in item"
 
 - name: Create secret keys
-  template:
+  ansible.builtin.template:
     src: key.j2
     dest: "{{ item.secret.path | default(x509_certificate_dir + '/' + item.name + '.key') }}"
     owner: "{{ item.secret.owner | default(x509_certificate_default_owner) }}"
@@ -74,7 +76,7 @@
     - "'secret' in item"
 
 - name: Remove public keys
-  file:
+  ansible.builtin.file:
     path: "{{ item.public.path | default(x509_certificate_dir + '/' + item.name + '.pem') }}"
     state: absent
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
@@ -83,7 +85,7 @@
     - "'public' in item"
 
 - name: Remove secret keys
-  file:
+  ansible.builtin.file:
     path: "{{ item.secret.path | default(x509_certificate_dir + '/' + item.name + '.key') }}"
     state: absent
   no_log: "{% if x509_certificate_debug_log %}no{% else %}yes{% endif %}"
