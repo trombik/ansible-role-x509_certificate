@@ -11,3 +11,12 @@ x509_certificate_validate_command_public:
   openssl: openssl x509 -noout -in %s
 x509_certificate: []
 x509_certificate_debug_log: no
+
+x509_cfssl_scheme: https
+x509_cfssl_host: 127.0.0.1
+x509_cfssl_port: 8888
+x509_cfssl_endpoint_base_path: /api/v1/cfssl
+x509_cfssl_retries: 3
+x509_cfssl_delay: 10
+x509_cfssl_uri_param: {}
+x509_cfssl_certificate_newcert: []

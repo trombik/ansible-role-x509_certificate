@@ -79,6 +79,7 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
+
   - name: remove
     includes:
       - freebsd-12.1-amd64
@@ -88,3 +89,13 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/remove_spec.rb
+
+  - name: cfssl
+    provisioner:
+      name: ansible_playbook
+      playbook: tests/serverspec/cfssl.yml
+    verifier:
+      name: shell
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/cfssl_spec.rb
+    includes:
+      - freebsd-13.0-amd64
