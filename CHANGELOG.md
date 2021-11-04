@@ -1,3 +1,7 @@
+## Release 2.2.0
+
+* 348705e feature: introduce experimental `x509_cfssl_certificate_newcert`
+
 ## Release 2.1.4
 
 * 91270ca bugfix: support Devuan
