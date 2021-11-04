@@ -21,6 +21,15 @@ The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 | `x509_certificate_validate_command_public` | dict of command to validate public key (see below) | `{"openssl"=>"openssl x509 -noout -in %s"}` |
 | `x509_certificate` | keys to manage (see below) | `[]` |
 | `x509_certificate_debug_log` | enable logging of sensitive data during the play if `yes`. note that the log will display the value of `x509_certificate`, including secret key, if `yes` | `no` |
+| `x509_cfssl_scheme` | URL scheme part of `cfssl` URL | `https` |
+| `x509_cfssl_host` | Host part of `cfssl` URL | `127.0.0.1` |
+| `x509_cfssl_port` | Port of `cfssl` | `8888` |
+| `x509_cfssl_endpoint_base_path` | Path part of `cfssl` URL | `/api/v1/cfssl` |
+| `x509_cfssl_retries` | Number of retry when connecting to `cfssl` | `3` |
+| `x509_cfssl_delay` | Delay in second between retry when connecting to `cfssl` | `10` |
+| `x509_cfssl_uri_param` | Additional parameters in dict to pass `ansible` `uri` module when connecting `cfssl` | `{}` |
+| `x509_cfssl_certificate_newcert` | A list of certificates to send to `cfssl`. See below | `[]` |
+
 
 ## `x509_certificate_validate_command_secret`
 
@@ -54,6 +63,13 @@ This variable is a list of dict. Keys and Values are explained below.
 | `group` | group of the file (default is `x509_certificate_default_group`) | no |
 | `mode` | permission of the file (default is `0444` when the file is a public certificate, `0400` when the file is a secet key) | no |
 | `key` | the content of the key | no |
+
+## `x509_cfssl_certificate_newcert`
+
+As this variable is _very_ experimental, it is intentionally not documented
+yet.
+
+See an example at [`tests/serverspec/cfssl.yml`](tests/serverspec/cfssl.yml).
 
 ## Debian
 

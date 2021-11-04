@@ -1,3 +1,6 @@
 ---
+roles:
+  - name: trombik.cfssl
+  - name: trombik.freebsd_pkg_repo
 collections:
   - name: community.general
