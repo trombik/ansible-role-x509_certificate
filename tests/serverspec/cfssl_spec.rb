@@ -4,6 +4,7 @@ require "serverspec"
 cert_dir = "/usr/local/etc"
 user = "www"
 group = "www"
+syslog_file = "/var/log/messages"
 
 describe file "#{cert_dir}/localhost.csr" do
   it { should exist }
