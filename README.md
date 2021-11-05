@@ -30,7 +30,6 @@ The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 | `x509_cfssl_uri_param` | Additional parameters in dict to pass `ansible` `uri` module when connecting `cfssl` | `{}` |
 | `x509_cfssl_certificate_newcert` | A list of certificates to send to `cfssl`. See below | `[]` |
 
-
 ## `x509_certificate_validate_command_secret`
 
 This variable is a dict. The key is command name and the value is used to
@@ -70,6 +69,44 @@ As this variable is _very_ experimental, it is intentionally not documented
 yet.
 
 See an example at [`tests/serverspec/cfssl.yml`](tests/serverspec/cfssl.yml).
+
+## Including `trombik.x509_certificate"
+
+You may include the role from your tasks or roles. Use `vars` to define
+specific role variables by `vars`.
+
+```yaml
+- name: Include role trombik.x509_certificate
+  include_role:
+    name: trombik.x509_certificate
+  vars:
+    x509_certificate: "{{ my_valiable }}"
+    x509_certificate_debug_log: yes
+```
+
+However, when you want to pass a single variable that includes the role
+variables, you need to pass your variable to a special bridge role variable,
+`x509_certificate_vars`.
+
+```yaml
+- name: Include role trombik.x509_certificate
+  include_role:
+    name: trombik.x509_certificate
+  vars:
+    x509_certificate_vars: "{{ my_variable }}"
+```
+
+The following example does NOT work:
+
+```yaml
+- name: Include role trombik.x509_certificate
+  include_role:
+    name: trombik.x509_certificate
+  vars: "{{ my_variable }}"
+```
+
+See [Issue 19084](https://github.com/ansible/ansible/issues/19084) for the
+details.
 
 ## Debian
 
