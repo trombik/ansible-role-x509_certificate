@@ -70,7 +70,7 @@ yet.
 
 See an example at [`tests/serverspec/cfssl.yml`](tests/serverspec/cfssl.yml).
 
-## Including `trombik.x509_certificate"
+## Including `trombik.x509_certificate`
 
 You may include the role from your tasks or roles. Use `vars` to define
 specific role variables by `vars`.
