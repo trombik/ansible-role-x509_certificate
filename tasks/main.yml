@@ -159,6 +159,7 @@
     - item['json']['success']
     # only if specified
     - "'combined' in item[ansible_loop_var]"
+  notify: "{{ item[ansible_loop_var]['combined']['notify'] | default(omit) }}"
 
 - name: Create private key
   ansible.builtin.copy:
@@ -174,6 +175,7 @@
     - "'json' in item"
     # API request was success
     - item['json']['success']
+  notify: "{{ item[ansible_loop_var]['private']['notify'] | default(omit) }}"
 
 - name: Create CSR
   ansible.builtin.copy:
@@ -187,6 +189,7 @@
   when:
     - "'json' in item"
     - item['json']['success']
+  notify: "{{ item[ansible_loop_var]['csr']['notify'] | default(omit) }}"
 
 - name: Create public key
   ansible.builtin.copy:
@@ -200,3 +203,4 @@
   when:
     - "'json' in item"
     - item['json']['success']
+  notify: "{{ item[ansible_loop_var]['public']['notify'] | default(omit) }}"

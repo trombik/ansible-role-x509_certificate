@@ -29,7 +29,7 @@
           mode: "0444"
           notify:
             - Restart foo
-            - Restart buz
+            - Restart bar
         private:
           path: /usr/local/etc/localhost.key
           owner: www
@@ -41,7 +41,6 @@
           owner: www
           group: www
           mode: "0440"
-        notify: Restart haproxy  # XXX not implemented
         body:
           request:
             hosts:
