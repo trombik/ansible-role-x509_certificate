@@ -1,3 +1,7 @@
+## Release 2.2.3
+
+* ecd812f bugfix: support `notify` in x509_cfssl_certificate_newcert
+
 ## Release 2.2.2
 
 * 95a4aea bugfix: allow to notify handlers
