@@ -5,6 +5,14 @@
       when: ansible_os_family == 'FreeBSD'
     - name: trombik.cfssl
     - ansible-role-x509_certificate
+  handlers:
+    # XXX used only for tests
+    - name: Restart foo
+      command: "logger foo is notified"
+    - name: Restart bar
+      command: "logger bar is notified"
+    - name: Restart buz
+      command: "logger buz is notified"
   vars:
     x509_certificate_debug_log: yes
     x509_certificate_cfssl_scheme: http
@@ -19,11 +27,15 @@
           owner: www
           group: www
           mode: "0444"
+          notify:
+            - Restart foo
+            - Restart buz
         private:
           path: /usr/local/etc/localhost.key
           owner: www
           group: www
           mode: "0440"
+          notify: Restart buz
         combined:
           path: /usr/local/etc/combined.pem
           owner: www

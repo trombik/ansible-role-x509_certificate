@@ -62,6 +62,7 @@ This variable is a list of dict. Keys and Values are explained below.
 | `group` | group of the file (default is `x509_certificate_default_group`) | no |
 | `mode` | permission of the file (default is `0444` when the file is a public certificate, `0400` when the file is a secet key) | no |
 | `key` | the content of the key | no |
+| `notify` | A string or a list of name of handler(s) to notify | no |
 
 ## `x509_certificate_cfssl_certificate_newcert`
 
@@ -151,9 +152,18 @@ None
 # Example Playbook
 
 ```yaml
+---
 - hosts: localhost
   roles:
     - ansible-role-x509_certificate
+  handlers:
+    # XXX used only for tests
+    - name: Restart foo
+      command: "logger foo is notified"
+    - name: Restart bar
+      command: "logger bar is notified"
+    - name: Restart buz
+      command: "logger buz is notified"
   vars:
     # XXX NEVER set this variable to `yes` unless you know what you are doing.
     x509_certificate_debug_log: yes
@@ -164,6 +174,9 @@ None
       - name: foo
         state: present
         public:
+          notify:
+            - Restart foo
+            - Restart buz
           key: |
             -----BEGIN CERTIFICATE-----
             MIIDOjCCAiICCQDaGChPypIR9jANBgkqhkiG9w0BAQUFADBfMQswCQYDVQQGEwJB
@@ -217,6 +230,7 @@ None
           path: /usr/local/etc/ssl/bar/bar.key
           owner: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
           group: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
+          notify: Restart bar
           key: |
             -----BEGIN RSA PRIVATE KEY-----
             MIIEowIBAAKCAQEA2fZ3dYrKBhnh+DhW0Opqc5ZXaONvC6hGEh+Bu34cyzCnWLCK

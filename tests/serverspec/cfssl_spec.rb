@@ -49,3 +49,9 @@ describe command "openssl x509 -in #{cert_dir}/localhost.pem -text" do
   its(:stdout) { should match(/TLS Web Server Authentication/) }
   its(:stdout) { should match(/#{Regexp.escape("Subject: C = US, ST = California, L = San Francisco, O = example.com, CN = www.example.com")}/) }
 end
+
+%w[foo bar buz].each do |k|
+  describe command("grep '#{k} is notified' #{syslog_file}") do
+    its(:exit_status) { should eq 0 }
+  end
+end
