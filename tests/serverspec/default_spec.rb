@@ -10,6 +10,12 @@ additional_packages = ["quagga"]
 additional_user = "quagga"
 additional_group = "quagga"
 prefix = ""
+syslog_file = case os[:family]
+              when "freebsd", "openbsd", "redhat"
+                "/var/log/messages"
+              else
+                "/var/log/syslog"
+              end
 
 case os[:family]
 when "redhat"
@@ -116,4 +122,10 @@ describe command("openssl rsa -check -noout -in #{prefix}/etc/quagga/certs/quagg
   its(:exit_status) { should eq 0 }
   its(:stderr) { should eq "" }
   its(:stdout) { should match(/^RSA key ok$/) }
+end
+
+%w[foo bar buz].each do |k|
+  describe command("grep '#{k} is notified' #{syslog_file}") do
+    its(:exit_status) { should eq 0 }
+  end
 end

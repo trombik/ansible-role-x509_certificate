@@ -67,6 +67,7 @@
   with_items: "{{ x509_certificate_present }}"
   when:
     - "'public' in item"
+  notify: "{{ item['public']['notify'] | default(omit) }}"
 
 - name: Create secret keys
   ansible.builtin.template:
@@ -80,6 +81,7 @@
   with_items: "{{ x509_certificate_present }}"
   when:
     - "'secret' in item"
+  notify: "{{ item['secret']['notify'] | default(omit) }}"
 
 - name: Remove public keys
   ansible.builtin.file:
@@ -89,6 +91,7 @@
   with_items: "{{ x509_certificate_absent }}"
   when:
     - "'public' in item"
+  notify: "{{ item['public']['notify'] | default(omit) }}"
 
 - name: Remove secret keys
   ansible.builtin.file:
@@ -98,6 +101,7 @@
   with_items: "{{ x509_certificate_absent }}"
   when:
     - "'secret' in item"
+  notify: "{{ item['secret']['notify'] | default(omit) }}"
 
 - name: Do request newcert (x509_certificate_cfssl_certificate_newcert)
   ansible.builtin.uri:
