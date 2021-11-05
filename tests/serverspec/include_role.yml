@@ -14,8 +14,8 @@
   vars:
     my_role_variable:
       x509_certificate_debug_log: yes
-      x509_cfssl_scheme: http
-      x509_cfssl_certificate_newcert:
+      x509_certificate_cfssl_scheme: http
+      x509_certificate_cfssl_certificate_newcert:
         - csr:
             path: /usr/local/etc/localhost.csr
             owner: www
