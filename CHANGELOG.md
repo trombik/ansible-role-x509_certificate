@@ -1,3 +1,7 @@
+## Release 2.2.2
+
+* 95a4aea bugfix: allow to notify handlers
+
 ## Release 2.2.1
 
 * 1a1c17b bugfix: use correct role name in README
