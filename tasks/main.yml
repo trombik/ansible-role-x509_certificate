@@ -4,6 +4,12 @@
 - name: "Include variables from {{ ansible_os_family }}.yml"
   include_vars: "{{ ansible_os_family }}.yml"
 
+- name: Do workaround ansible issues 19084
+  # See https://github.com/ansible/ansible/issues/19084
+  set_fact: {"{{ item.key }}": "{{ item.value }}"}
+  with_dict: "{{ x509_certificate_vars }}"
+  when: x509_certificate_vars is defined
+
 - name: "Include tasks install-{{ ansible_os_family }}.yml"
   include_tasks: "install-{{ ansible_os_family }}.yml"
 

@@ -1,0 +1,127 @@
+---
+- hosts: localhost
+  roles:
+    - name: trombik.freebsd_pkg_repo
+      when: ansible_os_family == 'FreeBSD'
+    - name: trombik.cfssl
+    - ansible-role-x509_certificate
+  post_tasks:
+    - name: Include ansible-role-x509_certificate
+      include_role:
+        name: ansible-role-x509_certificate
+      vars:
+        x509_certificate_vars: "{{ my_role_variable }}"
+  vars:
+    my_role_variable:
+      x509_certificate_debug_log: yes
+      x509_cfssl_scheme: http
+      x509_cfssl_certificate_newcert:
+        - csr:
+            path: /usr/local/etc/localhost.csr
+            owner: www
+            group: www
+            mode: "0444"
+          public:
+            path: /usr/local/etc/localhost.pem
+            owner: www
+            group: www
+            mode: "0444"
+          private:
+            path: /usr/local/etc/localhost.key
+            owner: www
+            group: www
+            mode: "0440"
+          combined:
+            path: /usr/local/etc/combined.pem
+            owner: www
+            group: www
+            mode: "0440"
+          notify: Restart haproxy  # XXX not implemented
+          body:
+            request:
+              hosts:
+                - localhost
+                - www.example.com
+              names:
+                - C: US
+                  ST: California
+                  L: San Francisco
+                  O: example.com
+              CN: www.example.com
+
+    cfssl_db_migration_environment: production
+    cfssl_db_migration_config:
+      production:
+        driver: sqlite3
+        open: "{{ cfssl_db_sqlite_database_file }}"
+
+    cfssl_db_type: sqlite
+    os_cfssl_extra_packages:
+      FreeBSD: sqlite3
+      Debian: sqlite3
+    cfssl_extra_packages: "{{ os_cfssl_extra_packages[ansible_os_family] }}"
+    project_auth_key: 0123456789ABCDEF0123456789ABCDEF
+    project_auth_key_name: primary
+
+    # see https://github.com/cloudflare/cfssl/tree/master/certdb/README.md
+    cfssl_db_config:
+      driver: sqlite3
+      data_source: "{{ cfssl_db_sqlite_database_file }}"
+
+    cfssl_ca_csr_config:
+      CN: Test CA
+      key:
+        algo: rsa
+        size: 2048
+
+    cfssl_ca_root_dir: "/usr/local/etc/cfssl/root"
+
+    cfssl_ca_config:
+      auth_keys:
+        primary:
+          type: standard
+          key: "{{ project_auth_key }}"
+      signing:
+        default:
+          expiry: 17520h
+          usages:
+            - key encipherment
+            - server auth
+          auth_key: "{{ project_auth_key_name }}"
+        profiles:
+          server:
+            expiry: 4320h
+            usages:
+              - key encipherment
+              - server auth
+            auth_key: "{{ project_auth_key_name }}"
+          client:
+            expiry: 4320h
+            usages:
+              - key encipherment
+              - client auth
+            auth_key: "{{ project_auth_key_name }}"
+
+    os_cfssl_flags:
+      FreeBSD: |
+        cfssl_flags="-db-config {{ cfssl_ca_root_dir }}/db.json -ca {{ cfssl_ca_root_dir }}/ca.pem -ca-key {{ cfssl_ca_root_dir }}/ca-key.pem -config {{ cfssl_ca_config_file }}"
+      Debian: ""
+    # "
+    cfssl_flags: "{{ os_cfssl_flags[ansible_os_family] }}"
+
+    # __________________________________________package
+    freebsd_pkg_repo:
+
+      FreeBSD:
+        enabled: "true"
+        state: present
+
+      # enable my own package repository, where the latest package is
+      # available
+      FreeBSD_devel:
+        enabled: "true"
+        state: present
+        url: "http://pkg.i.trombik.org/{{ ansible_distribution_version | regex_replace('\\.', '') }}{{ansible_architecture}}-default-default/"
+        mirror_type: http
+        signature_type: none
+        priority: 100

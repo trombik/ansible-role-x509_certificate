@@ -99,3 +99,13 @@ suites:
       command: rspec -c -f d -I tests/serverspec tests/serverspec/cfssl_spec.rb
     includes:
       - freebsd-13.0-amd64
+
+  - name: include_role
+    provisioner:
+      name: ansible_playbook
+      playbook: tests/serverspec/include_role.yml
+    verifier:
+      name: shell
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/include_role_spec.rb
+    includes:
+      - freebsd-13.0-amd64
