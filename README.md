@@ -1,4 +1,4 @@
-# ansible-role-x509_certificate
+# `trombik.x509_certificate`
 
 Manages X509 secret and/or public keys. The role assumes you already have valid
 secret key or *signed* public key. The role does not create or manage CSR.
