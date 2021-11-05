@@ -1,3 +1,10 @@
+## Release 2.2.1
+
+* 1a1c17b bugfix: use correct role name in README
+* 1819c5e bugfix: fix a typo in README
+* 80051df bugfix: use canonical prefix for cfssl-related vars
+* 48d427d bugfix: accpet a single variable for all role variables
+
 ## Release 2.2.0
 
 * 348705e feature: introduce experimental `x509_cfssl_certificate_newcert`
