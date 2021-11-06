@@ -4,3 +4,4 @@ __x509_certificate_packages:
   - openssl
 __x509_certificate_default_owner: root
 __x509_certificate_default_group: root
+__x509_certificate_update_ca_store_command: update-ca-certificates

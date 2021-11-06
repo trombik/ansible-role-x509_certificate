@@ -9,3 +9,10 @@
   ansible.builtin.pkgng:
     name: "{{ x509_certificate_additional_packages }}"
     state: present
+
+- name: Create /usr/local/etc/ssl/certs
+  # XXX the default directory for trusted certificates. see certctl(8)
+  ansible.builtin.file:
+    path: /usr/local/etc/ssl/certs
+    mode: "0755"
+    state: directory

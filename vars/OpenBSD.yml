@@ -3,3 +3,6 @@ __x509_certificate_dir: /etc/ssl
 __x509_certificate_packages: []
 __x509_certificate_default_owner: root
 __x509_certificate_default_group: wheel
+
+# FIXME
+__x509_certificate_update_ca_store_command: echo

@@ -1,6 +1,4 @@
 ---
 
-- name: Restart x509_certificate
-  service:
-    name: x509_certificate
-    state: restarted
+- name: Update root CA store
+  command: "{{ x509_certificate_update_ca_store_command }}"

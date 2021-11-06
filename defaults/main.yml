@@ -11,6 +11,7 @@ x509_certificate_validate_command_public:
   openssl: openssl x509 -noout -in %s
 x509_certificate: []
 x509_certificate_debug_log: no
+x509_certificate_update_ca_store_command: "{{ __x509_certificate_update_ca_store_command }}"
 
 x509_certificate_cfssl_scheme: https
 x509_certificate_cfssl_host: 127.0.0.1
@@ -20,3 +21,4 @@ x509_certificate_cfssl_retries: 3
 x509_certificate_cfssl_delay: 10
 x509_certificate_cfssl_uri_param: {}
 x509_certificate_cfssl_certificate_newcert: []
+x509_certificate_cfssl_info: []
