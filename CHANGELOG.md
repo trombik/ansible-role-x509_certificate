@@ -1,3 +1,7 @@
+## Release 2.3.0
+
+* b8a50c9 feature: support `info` cfssl API
+
 ## Release 2.2.3
 
 * ecd812f bugfix: support `notify` in x509_cfssl_certificate_newcert
