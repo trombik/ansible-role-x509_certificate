@@ -51,8 +51,26 @@ describe command "openssl x509 -in #{cert_dir}/localhost.pem -text" do
   its(:stdout) { should match(/#{Regexp.escape("Subject: C = US, ST = California, L = San Francisco, O = example.com, CN = www.example.com")}/) }
 end
 
-%w[foo bar buz].each do |k|
-  describe command("grep '#{k} is notified' #{syslog_file}") do
+[
+  "foo is notified",
+  "bar is notified",
+  "buz is notified",
+  "something else is updated"
+].each do |text|
+  describe command("grep #{text.shellescape} #{syslog_file.shellescape}") do
+    its(:exit_status) { should eq 0 }
+  end
+end
+
+case os[:family]
+when "freebsd"
+  describe command "certctl list | grep 'Test CA'" do
+    its(:exit_status) { should eq 0 }
+  end
+else
+  # XXX if this test fail, investigate which command shows list of CAs in
+  # trusted CA store, and add a test above
+  describe command "sh -c 'echo Unsupported platform: #{os[:family]}; exit 1'" do
     its(:exit_status) { should eq 0 }
   end
 end

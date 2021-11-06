@@ -21,6 +21,7 @@ The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 | `x509_certificate_validate_command_public` | dict of command to validate public key (see below) | `{"openssl"=>"openssl x509 -noout -in %s"}` |
 | `x509_certificate` | keys to manage (see below) | `[]` |
 | `x509_certificate_debug_log` | enable logging of sensitive data during the play if `yes`. note that the log will display the value of `x509_certificate`, including secret key, if `yes` | `no` |
+| `x509_certificate_update_ca_store_command` | Command to run when root CA certificate store is updated | `{{ __x509_certificate_update_ca_store_command }}` |
 | `x509_certificate_cfssl_scheme` | URL scheme part of `cfssl` URL | `https` |
 | `x509_certificate_cfssl_host` | Host part of `cfssl` URL | `127.0.0.1` |
 | `x509_certificate_cfssl_port` | Port of `cfssl` | `8888` |
@@ -29,6 +30,7 @@ The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 | `x509_certificate_cfssl_delay` | Delay in second between retry when connecting to `cfssl` | `10` |
 | `x509_certificate_cfssl_uri_param` | Additional parameters in dict to pass `ansible` `uri` module when connecting `cfssl` | `{}` |
 | `x509_certificate_cfssl_certificate_newcert` | A list of certificates to send to `cfssl`. See below | `[]` |
+| `x509_certificate_cfssl_info` | See below | `[]` |
 
 ## `x509_certificate_validate_command_secret`
 
@@ -70,6 +72,30 @@ As this variable is _very_ experimental, it is intentionally not documented
 yet.
 
 See an example at [`tests/serverspec/cfssl.yml`](tests/serverspec/cfssl.yml).
+
+## `x509_certificate_cfssl_info`
+
+Calls `info` API and retrieves a root CA certificate from `cfssl` server.
+
+This variable is a list of dict. The keys in the dict are:
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `path` | Path to a file to keep the certificate. | yes |
+| `body` | A dict of body parameters to send in the request | yes |
+| `notify` | A list of handlers to notify when the certificate file is modified. Default is `Update root CA store` handler (see below) | no |
+
+## `x509_certificate_update_ca_store_command`
+
+This command is invoked in  `Update root CA store` handler with
+`ansible.builtin.command`.
+
+## `Update root CA store` handler
+
+Notify `Update root CA store` handler when you add a CA certificate to
+system's root CA certificate store.
+
+This handler does not work on OpenBSD yet.
 
 ## Including `trombik.x509_certificate`
 
@@ -118,6 +144,16 @@ details.
 | `__x509_certificate_default_owner` | `root` |
 | `__x509_certificate_default_group` | `root` |
 
+## Debian
+
+| Variable | Default |
+|----------|---------|
+| `__x509_certificate_dir` | `/etc/ssl` |
+| `__x509_certificate_packages` | `["openssl"]` |
+| `__x509_certificate_default_owner` | `root` |
+| `__x509_certificate_default_group` | `root` |
+| `__x509_certificate_update_ca_store_command` | `update-ca-certificates` |
+
 ## FreeBSD
 
 | Variable | Default |
@@ -126,6 +162,7 @@ details.
 | `__x509_certificate_packages` | `[]` |
 | `__x509_certificate_default_owner` | `root` |
 | `__x509_certificate_default_group` | `wheel` |
+| `__x509_certificate_update_ca_store_command` | `/usr/sbin/certctl rehash` |
 
 ## OpenBSD
 
@@ -135,6 +172,7 @@ details.
 | `__x509_certificate_packages` | `[]` |
 | `__x509_certificate_default_owner` | `root` |
 | `__x509_certificate_default_group` | `wheel` |
+| `__x509_certificate_update_ca_store_command` | `echo` |
 
 ## RedHat
 
@@ -144,6 +182,7 @@ details.
 | `__x509_certificate_packages` | `["openssl"]` |
 | `__x509_certificate_default_owner` | `root` |
 | `__x509_certificate_default_group` | `root` |
+| `__x509_certificate_update_ca_store_command` | `update-ca-trust` |
 
 # Dependencies
 
