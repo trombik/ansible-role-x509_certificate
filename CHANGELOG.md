@@ -1,3 +1,8 @@
+## Release 2.4.0
+
+* 6082014 bugfix: update include_role test, fix tests
+* 8fab3eb feature: introduce `x509_certificate_commands`
+
 ## Release 2.3.0
 
 * b8a50c9 feature: support `info` cfssl API
