@@ -5,6 +5,16 @@
       when: ansible_os_family == 'FreeBSD'
     - name: trombik.cfssl
     - ansible-role-x509_certificate
+  handlers:
+    # XXX used only for tests
+    - name: Restart foo
+      command: "logger foo is notified"
+    - name: Restart bar
+      command: "logger bar is notified"
+    - name: Restart buz
+      command: "logger buz is notified"
+    - name: Update something else
+      command: "logger something else is updated"
   post_tasks:
     - name: Include ansible-role-x509_certificate
       include_role:
@@ -12,9 +22,27 @@
       vars:
         x509_certificate_vars: "{{ my_role_variable }}"
   vars:
+    os_project_root_ca_dir:
+      # FIXME investigate how CA store works on OpenBSD
+      OpenBSD: /tmp
+      FreeBSD: /usr/local/etc/ssl/certs
+      Debian: /usr/local/share/ca-certificates
+      RedHat: /etc/pki/ca-trust/source/anchors
+
+    project_root_ca_dir: "{{ os_project_root_ca_dir[ansible_os_family] }}"
     my_role_variable:
       x509_certificate_debug_log: yes
       x509_certificate_cfssl_scheme: http
+
+      x509_certificate_cfssl_info:
+        - path: "{{ project_root_ca_dir }}/primary.crt"
+          body:
+            label: primary
+            profile: default
+          notify:
+            - Update root CA store
+            - Update something else
+
       x509_certificate_cfssl_certificate_newcert:
         - csr:
             path: /usr/local/etc/localhost.csr
@@ -26,17 +54,21 @@
             owner: www
             group: www
             mode: "0444"
+            notify:
+              - Restart foo
+              - Restart bar
           private:
             path: /usr/local/etc/localhost.key
             owner: www
             group: www
             mode: "0440"
+            notify: Restart buz
           combined:
             path: /usr/local/etc/combined.pem
             owner: www
             group: www
             mode: "0440"
-          notify: Restart haproxy  # XXX not implemented
+          notify: Restart haproxy
           body:
             request:
               hosts:

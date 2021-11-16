@@ -16,6 +16,8 @@
     - name: Update something else
       command: "logger something else is updated"
   vars:
+    # `include_role` test suite is supposed to produce the identical results.
+    # if you chnage this file, update `tests/serversepc/include.yml` as well.
     os_project_root_ca_dir:
       # FIXME investigate how CA store works on OpenBSD
       OpenBSD: /tmp
