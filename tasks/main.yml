@@ -260,3 +260,19 @@
     - "'json' in item"
     - item['json']['success']
   notify: "{{ item[ansible_loop_var]['notify'] | default('Update root CA store') }}"
+
+- name: Run x509_certificate_commands
+  command: "{{ item['cmd'] }}"
+  args:
+    creates: "{{ item['creates'] }}"
+  with_items: "{{ x509_certificate_commands }}"
+  notify: "{{ item['notify'] | default(omit) }}"
+
+- name: Ensure file owner, group, and mode on files created by x509_certificate_commands
+  ansible.builtin.file:
+    path: "{{ item['creates'] }}"
+    owner: "{{ item['owner'] | default(omit) }}"
+    group: "{{ item['group'] | default(omit) }}"
+    mode: "{{ item['mode'] | default(omit) }}"
+    state: file
+  with_items: "{{ x509_certificate_commands }}"

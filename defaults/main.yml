@@ -22,3 +22,4 @@ x509_certificate_cfssl_delay: 10
 x509_certificate_cfssl_uri_param: {}
 x509_certificate_cfssl_certificate_newcert: []
 x509_certificate_cfssl_info: []
+x509_certificate_commands: []
