@@ -31,6 +31,7 @@ The role uses `ansible` collection. See [`requirements.yml`](requirements.yml).
 | `x509_certificate_cfssl_uri_param` | Additional parameters in dict to pass `ansible` `uri` module when connecting `cfssl` | `{}` |
 | `x509_certificate_cfssl_certificate_newcert` | A list of certificates to send to `cfssl`. See below | `[]` |
 | `x509_certificate_cfssl_info` | See below | `[]` |
+| `x509_certificate_commands` | See below | `[]` |
 
 ## `x509_certificate_validate_command_secret`
 
@@ -65,6 +66,32 @@ This variable is a list of dict. Keys and Values are explained below.
 | `mode` | permission of the file (default is `0444` when the file is a public certificate, `0400` when the file is a secet key) | no |
 | `key` | the content of the key | no |
 | `notify` | A string or a list of name of handler(s) to notify | no |
+
+## `x509_certificate_commands`
+
+This variable is a list of dict. Each list element is a kind of mixture of
+`ansible.builtin.command` and `ansible.builtin.file`. The element is first
+passed to `ansible.builtin.command`, which is expected to create a file, and
+the file is fixed up with specified `owner`, `group`, and `mode`.
+
+The variable is intended for arbitrary file format conversion, such as a
+secret key in `PKCS#1` to another secret key in `PKCS#8`, which is used by
+some application, such as Java for example.
+
+The commands are executed at the end of tasks.
+
+The operation is not atomic.
+
+Accepted keys are:
+
+| Name | Description | Mandatory? |
+|------|-------------|------------|
+| `cmd` | A command to run | Yes |
+| `creates` | Path to file that the command to create | Yes |
+| `owner` | Name of file owner | No |
+| `group` | Name of file group | No |
+| `mode` | file permission | No |
+| `notify` | A string or a list of name of handler(s) to notify | No |
 
 ## `x509_certificate_cfssl_certificate_newcert`
 
@@ -203,7 +230,41 @@ None
       command: "logger bar is notified"
     - name: Restart buz
       command: "logger buz is notified"
+    - name: Restart foobar
+      command: "logger foobar is notified"
   vars:
+    os_project_some_user:
+      FreeBSD: www
+      Debian: www-data
+      RedHat: ftp
+      OpenBSD: www
+    project_some_user: "{{ os_project_some_user[ansible_os_family] }}"
+    os_project_some_group:
+      FreeBSD: www
+      Debian: www-data
+      RedHat: ftp
+      OpenBSD: www
+    project_some_group: "{{ os_project_some_group[ansible_os_family] }}"
+
+    os_project_quagga_cert_dir:
+      FreeBSD: /usr/local/etc/quagga/certs
+      OpenBSD: /etc/quagga/certs
+      Debian: /etc/quagga/certs
+      RedHat: /etc/quagga/certs
+    project_quagga_cert_dir: "{{ os_project_quagga_cert_dir[ansible_os_family] }}"
+    os_project_quagga_user:
+      FreeBSD: quagga
+      Debian: quagga
+      RedHat: quagga
+      OpenBSD: _quagga
+    project_quagga_user: "{{ os_project_quagga_user[ansible_os_family] }}"
+    os_project_quagga_group:
+      FreeBSD: quagga
+      Debian: quagga
+      RedHat: quagga
+      OpenBSD: _quagga
+    project_quagga_group: "{{ os_project_quagga_group[ansible_os_family] }}"
+
     # XXX NEVER set this variable to `yes` unless you know what you are doing.
     x509_certificate_debug_log: yes
 
@@ -241,8 +302,8 @@ None
         state: present
         public:
           path: /usr/local/etc/ssl/bar/bar.pub
-          owner: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
-          group: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
+          owner: "{{ project_some_user }}"
+          group: "{{ project_some_group }}"
           mode: "0644"
           key: |
             -----BEGIN CERTIFICATE-----
@@ -267,8 +328,8 @@ None
             -----END CERTIFICATE-----
         secret:
           path: /usr/local/etc/ssl/bar/bar.key
-          owner: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
-          group: "{% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'RedHat' %}ftp{% else %}www-data{% endif %}"
+          owner: "{{ project_some_user }}"
+          group: "{{ project_some_group }}"
           notify: Restart bar
           key: |
             -----BEGIN RSA PRIVATE KEY-----
@@ -301,9 +362,9 @@ None
       - name: quagga
         state: present
         public:
-          path: "{% if ansible_os_family == 'FreeBSD' %}/usr/local{% endif %}/etc/quagga/certs/quagga.pem"
-          owner: "{% if ansible_os_family == 'OpenBSD' %}_quagga{% else %}quagga{% endif %}"
-          group: "{% if ansible_os_family == 'OpenBSD' %}_quagga{% else %}quagga{% endif %}"
+          path: "{{ project_quagga_cert_dir }}/quagga.pem"
+          owner: "{{ project_quagga_user }}"
+          group: "{{ project_quagga_group }}"
           key: |
             -----BEGIN CERTIFICATE-----
             MIIDOjCCAiICCQDaGChPypIR9jANBgkqhkiG9w0BAQUFADBfMQswCQYDVQQGEwJB
@@ -326,9 +387,9 @@ None
             7IVZsbStnhJrawX31DQ=
             -----END CERTIFICATE-----
         secret:
-          path: "{% if ansible_os_family == 'FreeBSD' %}/usr/local{% endif %}/etc/quagga/certs/quagga.key"
-          owner: "{% if ansible_os_family == 'OpenBSD' %}_quagga{% else %}quagga{% endif %}"
-          group: "{% if ansible_os_family == 'OpenBSD' %}_quagga{% else %}quagga{% endif %}"
+          path: "{{ project_quagga_cert_dir }}/quagga.key"
+          owner: "{{ project_quagga_user }}"
+          group: "{{ project_quagga_group }}"
           mode: "0440"
           key: |
             -----BEGIN RSA PRIVATE KEY-----
@@ -358,6 +419,16 @@ None
             DZERGGX2hN9r7xahxZwnIguKQzBr6CTYBSWGvGYCHJKSLKn9Yb6OAJEN1epmXdlx
             kPF7nY8Cs8V8LYiuuDp9UMLRc90AmF87rqUrY5YP2zw6iNNvUBKs
             -----END RSA PRIVATE KEY-----
+
+    x509_certificate_commands:
+      # XXX libressl does not work with `-out -`, and the argument of -inform must
+      # be lower-cased.
+      - cmd: "openssl pkcs8 -inform pem -outform pem -topk8 -nocrypt -v1 PBE-SHA1-3DES -in {{ project_quagga_cert_dir }}/quagga.key -out {{ project_quagga_cert_dir }}/pkcs8.key"
+        creates: "{{ project_quagga_cert_dir }}/pkcs8.key"
+        owner: "{{ project_quagga_user }}"
+        group: "{{ project_quagga_group }}"
+        mode: "0440"
+        notify: Restart foobar
 ```
 
 # License

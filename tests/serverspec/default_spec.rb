@@ -124,7 +124,21 @@ describe command("openssl rsa -check -noout -in #{prefix}/etc/quagga/certs/quagg
   its(:stdout) { should match(/^RSA key ok$/) }
 end
 
-%w[foo bar buz].each do |k|
+describe file("#{prefix}/etc/quagga/certs/pkcs8.key") do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 440 }
+  it { should be_owned_by additional_user }
+  it { should be_grouped_into additional_group }
+end
+
+describe command("openssl pkcs8 -inform pem -outform pem -nocrypt -in #{prefix}/etc/quagga/certs/pkcs8.key") do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should eq "" }
+  its(:stdout) { should match(/BEGIN PRIVATE KEY/) }
+end
+
+%w[foo bar buz foobar].each do |k|
   describe command("grep '#{k} is notified' #{syslog_file}") do
     its(:exit_status) { should eq 0 }
   end
