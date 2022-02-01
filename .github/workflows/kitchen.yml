@@ -1,0 +1,84 @@
+---
+name: kitchen
+on:
+  - pull_request
+  - push
+jobs:
+  pre_build:
+
+    # A job to see if the entrire jobs should be skipped.
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.1
+        with:
+          concurrent_skipping: same_content
+          skip_after_successful_duplicate: 'true'
+          paths_ignore: '["**/*.md", "**/docs/**"]'
+          do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
+
+  list:
+    needs: pre_build
+    if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
+    runs-on: macos-10.15
+    outputs:
+      instances: ${{ steps.set-instances.outputs.instances }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Set instances for matrix build
+        id: set-instances
+        run: |
+          echo ::set-output name=instances::$(bundle exec kitchen list -j | jq --compact-output 'map(.instance)')
+
+  kitchen:
+    runs-on: macos-10.15
+    needs:
+      - pre_build
+      - list
+    if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
+    strategy:
+      matrix:
+        instance: ${{ fromJSON(needs.list.outputs.instances) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Cache vagrant boxes
+        uses: actions/cache@v2
+        env:
+          cache-name: vagrant-boxes
+        with:
+          path: ~/.vagrant.d/boxes/
+          # XXX using .kitchen.yml as cache key is not very efficient because
+          # the file has other configuration options, such as log level, and
+          # when you change options not related to vagrant boxes, cache
+          # becomes invalid.
+          key: vagrant-boxes-${{ hashFiles('**/.kitchen.yml') }}-${{ matrix.instance }}
+
+      - name: Show vagrant version
+        run: |
+          Vagrant --version
+
+      - name: Show VirtualBox version
+        run: |
+          virtualbox -h
+
+      - name: Run test-kitchen
+        run: |
+          bundle exec kitchen test ${{ matrix.instance }}
