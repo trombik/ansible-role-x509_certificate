@@ -11,14 +11,14 @@ additional_user = "quagga"
 additional_group = "quagga"
 prefix = ""
 syslog_file = case os[:family]
-              when "freebsd", "openbsd", "redhat"
+              when "freebsd", "openbsd", "redhat", "fedora"
                 "/var/log/messages"
               else
                 "/var/log/syslog"
               end
 
 case os[:family]
-when "redhat"
+when "redhat", "fedora"
   user = "ftp"
   group = "ftp"
 when "openbsd"

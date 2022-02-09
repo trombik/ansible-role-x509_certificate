@@ -75,6 +75,15 @@ platforms:
       box: trombik/ansible-devuan-3-amd64
       box_check_update: false
 
+  - name: fedora-35-amd64
+    driver:
+      box: trombik/ansible-fedora-35-amd64
+      box_check_update: false
+      box_version: 20200209.1639
+    provisioner:
+      extra_vars:
+        ansible_python_interpreter: '/usr/bin/python3'
+
 suites:
   - name: default
     provisioner:
