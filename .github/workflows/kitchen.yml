@@ -19,8 +19,33 @@ jobs:
           paths_ignore: '["**/*.md", "**/docs/**"]'
           do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
 
-  list:
+  lint:
     needs: pre_build
+    if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Lint Ansible Playbook
+        # XXX use SHA instead of tag. existing tags in releases page do not
+        # work. ansible-lint-action deliverately does not tag the repository.
+        #
+        # https://github.com/ansible/ansible-lint-action/issues/45
+        uses: ansible/ansible-lint-action@c37fb7b4bda2c8cb18f4942716bae9f11b0dc9bc
+        with:
+          targets: ""
+          # XXX workaround a bug mentioned in:
+          # https://github.com/ansible/ansible-lint-action/issues/59
+          #
+          # ImportError: cannot import name 'render_group' from 'rich.console'
+          override-deps: |
+            ansible-lint==5.3.2
+
+  list:
+    needs:
+      - pre_build
+      - lint
     if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
     runs-on: macos-10.15
     outputs:
