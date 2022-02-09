@@ -220,6 +220,25 @@ None
 ```yaml
 ---
 - hosts: localhost
+  pre_tasks:
+    - name: Install rsyslog on Fedora
+      ansible.builtin.yum:
+        name: rsyslog
+        state: installed
+      when:
+        - ansible_distribution == 'Fedora'
+    - name: Enable rsyslog
+      ansible.builtin.service:
+        name: rsyslog
+        enabled: yes
+      when:
+        - ansible_distribution == 'Fedora'
+    - name: Start rsyslog
+      ansible.builtin.service:
+        name: rsyslog
+        state: started
+      when:
+        - ansible_distribution == 'Fedora'
   roles:
     - ansible-role-x509_certificate
   handlers:
