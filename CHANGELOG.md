@@ -1,3 +1,11 @@
+## Release 2.5.0
+
+* b392953 doc: update example
+* 593ef6b feat: support Fedora
+* 3b4a322 ci: update CI
+* c33fc4a update: drop Ubuntu 18.04, add OpenBSD 7.0
+* 8d353f0 ci: add kitchen workflow to CI
+
 ## Release 2.4.0
 
 * 6082014 bugfix: update include_role test, fix tests
